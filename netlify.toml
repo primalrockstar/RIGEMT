@@ -1,5 +1,5 @@
 [build]
-  command = "/bin/ls"
-  publish = "."
+  command = "mkdir -p public && cp index.html public/"
+  publish = "public"
 [build.environment]
   BUILD_IMAGE = "xenial"
