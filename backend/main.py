@@ -4,9 +4,9 @@ class CheckoutSessionRequest(BaseModel):
 @app.post("/create-checkout-session")
 async def create_checkout_session(request: CheckoutSessionRequest, db: Session = Depends(get_db)):
     
-    # 1. Define IDs exactly as provided
-    MONTHLY_PRICE_ID = "price_1SdBdKJyVTqxIiexTvFFcXEy"
-    SEMESTER_PRICE_ID = "price_1SdBlTJyVTqxIiexmjK8S0Cn"
+    # 1. THE CONFIRMED IDs
+    MONTHLY_PRICE_ID = "price_1SdBdKJyVTqxIiexTvFFcXEy"  # $24.99
+    SEMESTER_PRICE_ID = "price_1SdBlTJyVTqxIiexmjK8S0Cn" # $79.99
     
     # 2. Set the Mode
     if request.price_id == MONTHLY_PRICE_ID:

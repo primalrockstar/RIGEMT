@@ -59,7 +59,7 @@ export default function Pricing() {
           BEST VALUE
         </div>
         <h3 className="text-xl font-bold mb-2 text-white">Semester Pass</h3>
-        <p className="text-3xl font-mono text-neon-400 mb-6">$120<span className="text-sm text-gray-400">/6mo</span></p>
+        <p className="text-3xl font-mono text-neon-400 mb-6">$79.99<span className="text-sm text-gray-400">/6mo</span></p>
         <button 
           onClick={() => handleCheckout(PRODUCTS.SEMESTER)}
           className="bg-neon-500 text-slate-900 px-6 py-3 rounded hover:bg-neon-400 transition-colors w-full font-bold"
