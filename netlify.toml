@@ -1,5 +1,5 @@
 [build]
-  command = ""
+  command = "ls"
   publish = "."
 [build.environment]
   BUILD_IMAGE = "xenial"
