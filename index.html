@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>THE RIG | Advanced NREMT Simulation & Voice PCR</title>
+    <meta name="description" content="The first EMS simulator with Voice-Activated PCR, AI Field Training Officer, and True Adaptive NREMT Testing. Stop guessing. Start training.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --bg-dark: #020617; /* Slate 950 */
+            --bg-panel: rgba(15, 23, 42, 0.7);
+            --neon: #22c55e;    /* Medical Green */
+            --neon-glow: #4ade80;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+
+        /* --- UTILITIES --- */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .flex-col { flex-direction: column; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .text-center { text-align: center; }
+        .font-bold { font-weight: 700; }
+        .font-mono { font-family: var(--font-mono); }
+        .hidden-sm { display: none; }
+        @media (min-width: 640px) { .hidden-sm { display: block; } .sm-row { flex-direction: row; } .sm-w-auto { width: auto; } }
+
+        /* --- BACKGROUND --- */
+        .grid-bg {
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            background-image: linear-gradient(rgba(74, 222, 128, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(74, 222, 128, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .vignette {
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            background: radial-gradient(circle at center, transparent 0%, var(--bg-dark) 100%);
+        }
+
+        /* --- COMPONENTS --- */
+        .glass {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 222, 128, 0.1);
+        }
+
+        .btn-neon {
+            background-color: var(--neon);
+            color: #020617;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+        }
+        .btn-neon:hover {
+            background-color: var(--neon-glow);
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+        }
+
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 999px;
+            color: var(--neon-glow);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            margin-bottom: 2rem;
+        }
+        .dot {
+            width: 8px; height: 8px; background-color: var(--neon); border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- LAYOUT SECTIONS --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 80px; z-index: 50;
+            display: flex; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .hero {
+            padding-top: 160px; padding-bottom: 80px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.05em;
+        }
+        .highlight {
+            background: linear-gradient(to right, var(--neon-glow), #10b981);
+            -webkit-background-clip: text; color: transparent;
+        }
+        .hero p {
+            font-size: 1.25rem; color: var(--text-muted); max-width: 650px; margin-bottom: 2.5rem; font-weight: 300;
+        }
+
+        .features {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem; padding: 4rem 0;
+        }
+        .feature-card {
+            padding: 2rem; border-radius: 1rem; transition: 0.3s;
+            border-top: 1px solid rgba(74, 222, 128, 0.1);
+        }
+        .feature-card:hover { border-color: rgba(74, 222, 128, 0.4); }
+        .icon-box {
+            width: 48px; height: 48px; background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem; color: var(--neon-glow);
+        }
+
+        footer {
+            margin-top: 5rem; padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.1);
+            background: #0f172a; font-size: 0.875rem; color: var(--text-muted);
+        }
+        .footer-links a { margin-left: 1.5rem; color: var(--text-muted); }
+        .footer-links a:hover { color: white; }
+
+        /* --- ICONS SVG --- */
+        svg { width: 24px; height: 24px; stroke-width: 2; stroke: currentColor; fill: none; }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="vignette"></div>
+
+    <nav class="glass">
+        <div class="container flex justify-between">
+            <div class="flex items-center gap-3">
+                <div style="width:32px; height:32px; background:var(--neon); color:#000; display:flex; align-items:center; justify-content:center; border-radius:4px; font-weight:bold; font-family:var(--font-mono);">R</div>
+                <span class="font-mono font-bold" style="letter-spacing: 1px;">THE RIG</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="https://app.rigemt.com/login" class="hidden-sm font-mono" style="color:var(--text-muted); font-size:0.875rem;">LOG IN</a>
+                <a href="https://app.rigemt.com/register" class="btn-neon">GET ACCESS</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <div class="status-badge">
+                <span class="dot"></span>
+                SYSTEM ONLINE // 256+ SCENARIOS
+            </div>
+
+            <h1 class="text-center">
+                Don't just pass the NREMT.<br>
+                <span class="highlight">Survive the Street.</span>
+            </h1>
+
+            <p class="text-center">
+                The first EMS simulator with <strong>Voice-Activated PCR</strong>, an <strong>AI Field Training Officer</strong>, and a <strong>True Adaptive Engine</strong> that learns your weaknesses.
+            </p>
+
+            <div class="flex flex-col sm-row gap-4">
+                <a href="https://app.rigemt.com/register" class="btn-neon" style="font-size: 1.125rem; padding: 1rem 2rem; width:100%; text-align:center;">
+                    Start Training ($49 Lifetime)
+                </a>
+            </div>
+            <p style="margin-top:1rem; font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                *Secure payment via Stripe. No subscription fees.
+            </p>
+        </div>
+
+        <section class="features">
+            <div class="glass feature-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </div>
+                <h3 class="font-bold font-mono" style="margin-bottom:0.5rem; font-size:1.25rem;">Voice PCR</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">
+                    Stop typing. Dictate your patient report. Our regex engine parses vitals (BP, Pulse, SpO2) instantly.
+                </p>
+            </div>
+
+            <div class="glass feature-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="font-bold font-mono" style="margin-bottom:0.5rem; font-size:1.25rem;">Adaptive CAT Engine</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">
+                    Powered by Item Response Theory. If you struggle with Trauma, THE RIG increases the intensity until you master it.
+                </p>
+            </div>
+
+            <div class="glass feature-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                </div>
+                <h3 class="font-bold font-mono" style="margin-bottom:0.5rem; font-size:1.25rem;">Smart FTO Agent</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">
+                    Your digital Field Training Officer. It watches your choices and admonishes you if you break protocol.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container flex flex-col sm-row justify-between items-center">
+            <div style="font-family:var(--font-mono);">
+                &copy; 2025 THE RIG. <br>
+                <span style="font-size:0.75rem;">Designed by <a href="https://emeritaclinical.com" style="color:white;">EmeritaClinical™</a></span>
+            </div>
+            <div class="footer-links flex" style="margin-top:1rem;">
+                <a href="mailto:legal@emeritaclinical.com">Privacy</a>
+                <a href="mailto:legal@emeritaclinical.com">Terms</a>
+                <a href="mailto:support@rigemt.com">Support</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
